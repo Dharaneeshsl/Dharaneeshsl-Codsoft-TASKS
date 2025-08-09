@@ -6,28 +6,23 @@ import string
 import sys
 from collections import Counter
 
-# Add the src directory to the path
 sys.path.append('.')
 
-# Import our modules
 from src.handwritten_text_rnn import CharRNN, visualize_text
 from src.run_demo import load_model, generate_text
 
 def calculate_character_diversity(text):
-    """Calculate character diversity in the generated text"""
     if not text:
         return 0
     
     char_counts = Counter(text)
     total_chars = len(text)
     
-    # Calculate Shannon entropy
     entropy = 0
     for char, count in char_counts.items():
         prob = count / total_chars
         entropy -= prob * np.log2(prob)
     
-    # Normalize by maximum possible entropy (uniform distribution)
     max_entropy = np.log2(min(len(char_counts), total_chars))
     if max_entropy == 0:
         return 0
@@ -36,7 +31,6 @@ def calculate_character_diversity(text):
     return normalized_entropy
 
 def calculate_n_gram_diversity(text, n=2):
-    """Calculate n-gram diversity in the generated text"""
     if len(text) < n:
         return 0
     
@@ -44,13 +38,11 @@ def calculate_n_gram_diversity(text, n=2):
     n_gram_counts = Counter(n_grams)
     total_n_grams = len(n_grams)
     
-    # Calculate Shannon entropy
     entropy = 0
     for n_gram, count in n_gram_counts.items():
         prob = count / total_n_grams
         entropy -= prob * np.log2(prob)
     
-    # Normalize by maximum possible entropy (uniform distribution)
     max_entropy = np.log2(min(len(n_gram_counts), total_n_grams))
     if max_entropy == 0:
         return 0
@@ -59,7 +51,6 @@ def calculate_n_gram_diversity(text, n=2):
     return normalized_entropy
 
 def evaluate_text_quality(generated_texts):
-    """Evaluate the quality of generated texts"""
     results = {
         'char_diversity': [],
         'bigram_diversity': [],
@@ -69,21 +60,16 @@ def evaluate_text_quality(generated_texts):
     }
     
     for text in generated_texts:
-        # Character diversity
         char_div = calculate_character_diversity(text)
         results['char_diversity'].append(char_div)
         
-        # N-gram diversity
         bigram_div = calculate_n_gram_diversity(text, n=2)
         trigram_div = calculate_n_gram_diversity(text, n=3)
         results['bigram_diversity'].append(bigram_div)
         results['trigram_diversity'].append(trigram_div)
         
-        # Average length
         results['avg_length'].append(len(text))
         
-        # Repetition score (lower is better)
-        # Check for repeated 4-grams
         if len(text) >= 4:
             four_grams = [text[i:i+4] for i in range(len(text) - 4 + 1)]
             four_gram_counts = Counter(four_grams)
@@ -92,7 +78,6 @@ def evaluate_text_quality(generated_texts):
         else:
             results['repetition_score'].append(0)
     
-    # Calculate averages
     avg_results = {
         'avg_char_diversity': np.mean(results['char_diversity']),
         'avg_bigram_diversity': np.mean(results['bigram_diversity']),
@@ -104,7 +89,6 @@ def evaluate_text_quality(generated_texts):
     return avg_results
 
 def evaluate_model_at_temperatures(model, all_chars, seed_texts, temperatures=[0.5, 0.7, 1.0, 1.2]):
-    """Evaluate model at different temperature settings"""
     results = {}
     
     for temp in temperatures:
@@ -116,7 +100,6 @@ def evaluate_model_at_temperatures(model, all_chars, seed_texts, temperatures=[0
             generated_texts.append(generated_text)
             print(f"  Seed: '{seed}'\n  Generated: '{generated_text[:50]}...'\n")
         
-        # Evaluate text quality
         eval_results = evaluate_text_quality(generated_texts)
         results[temp] = eval_results
         
@@ -128,7 +111,6 @@ def evaluate_model_at_temperatures(model, all_chars, seed_texts, temperatures=[0
     return results
 
 def plot_evaluation_results(results, output_path='output/evaluation_results.png'):
-    """Plot evaluation results at different temperatures"""
     temperatures = list(results.keys())
     
     metrics = [
@@ -156,22 +138,17 @@ def plot_evaluation_results(results, output_path='output/evaluation_results.png'
     return output_path
 
 def main():
-    # Create output directory if it doesn't exist
     os.makedirs('output', exist_ok=True)
     
-    # Load model
     model_path = 'models/handwritten_rnn.pth'
     
-    # If model doesn't exist, train a simple one
     if not os.path.exists(model_path):
         print("No trained model found. Running training script first...")
         from src.train_and_generate import main as train_main
         train_main()
     
-    # Load the model
     model, all_chars = load_model(model_path)
     
-    # Seed texts for evaluation
     seed_texts = [
         "The quick",
         "Hello world",
@@ -180,15 +157,11 @@ def main():
         "Dear friend"
     ]
     
-    # Evaluate model at different temperatures
     temperatures = [0.5, 0.7, 1.0, 1.2]
     results = evaluate_model_at_temperatures(model, all_chars, seed_texts, temperatures)
     
-    # Plot evaluation results
     plot_path = plot_evaluation_results(results)
     
-    # Generate and visualize best examples
-    # Find temperature with best diversity/repetition tradeoff
     best_temp = max(temperatures, key=lambda t: 
                    results[t]['avg_char_diversity'] + 
                    results[t]['avg_bigram_diversity'] - 

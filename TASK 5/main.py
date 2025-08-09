@@ -1,18 +1,9 @@
-#!/usr/bin/env python3
-"""
-Handwritten Text Generation with RNN
------------------------------------
-This script serves as the main entry point for the handwritten text generation project.
-It provides a command-line interface to train the model, generate text, and evaluate results.
-"""
-
 import argparse
 import os
 import sys
 import torch
 
 def main():
-    # Parse command line arguments
     parser = argparse.ArgumentParser(description='Handwritten Text Generation with RNN')
     parser.add_argument('--action', type=str, default='simple-demo', 
                         choices=['train', 'generate', 'evaluate', 'demo', 'simple-demo'],
@@ -27,12 +18,10 @@ def main():
                         help='Sampling temperature (for generate action)')
     args = parser.parse_args()
     
-    # Create necessary directories
     os.makedirs('data', exist_ok=True)
     os.makedirs('models', exist_ok=True)
     os.makedirs('output', exist_ok=True)
     
-    # Perform the requested action
     if args.action == 'train':
         print("Training the handwritten text RNN model...")
         from src.train_and_generate import main as train_main
@@ -40,23 +29,19 @@ def main():
         
     elif args.action == 'generate':
         print(f"Generating handwritten text with seed: '{args.seed}'")
-        # Import modules
         from src.handwritten_text_rnn import visualize_text
         from src.run_demo import load_model, generate_text
         
-        # Load model
         model_path = 'models/handwritten_rnn.pth'
         if not os.path.exists(model_path):
             print("No trained model found. Training a new model first...")
             from src.train_and_generate import main as train_main
             train_main()
         
-        # Load the model and generate text
         model, all_chars = load_model(model_path)
         generated_text = generate_text(model, args.seed, predict_len=args.length, 
                                       temperature=args.temperature, all_chars=all_chars)
         
-        # Print and visualize the generated text
         print("\nGenerated text:")
         print(generated_text)
         
