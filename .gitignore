@@ -1,3 +1,12 @@
+# Datasets and large files
+TASK 1/Genre Classification Dataset/test_data.txt
+TASK 1/Genre Classification Dataset/test_data_solution.txt
+TASK 1/Genre Classification Dataset/train_data.txt
+TASK 3/fraudTrain.csv
 TASK 3/fraudTest.csv
-TASK 3/fraudTest.csv
-TASK 3/fraudTest.csv
+TASK 3/Churn_Modelling.csv
+TASK 5/tmprqqo39x0
+
+# Python cache
+__pycache__/
+*.pyc
