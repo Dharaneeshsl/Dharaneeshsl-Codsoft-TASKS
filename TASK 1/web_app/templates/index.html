@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Genre Classification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-film"></i> Movie Genre Classifier</h1>
+                <p>Predict movie genres using machine learning and natural language processing</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% if not models_loaded %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Models not loaded!</strong> Please train the models first using: <code>python main.py --mode train</code>
+            </div>
+            {% endif %}
+
+            <div class="prediction-section">
+                <div class="input-card">
+                    <h2><i class="fas fa-magic"></i> Genre Prediction</h2>
+                    
+                    <form id="predictionForm">
+                        <div class="form-group">
+                            <label for="moviePlot">Movie Plot Summary</label>
+                            <textarea 
+                                id="moviePlot" 
+                                name="moviePlot" 
+                                placeholder="Enter the movie plot summary here... (e.g., A young wizard discovers his magical heritage and must defeat an evil sorcerer to save the world)"
+                                rows="6"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modelSelect">Select Model</label>
+                            <select id="modelSelect" name="model">
+                                <option value="svm">Support Vector Machine (Recommended)</option>
+                                <option value="logistic_regression">Logistic Regression</option>
+                                <option value="naive_bayes">Naive Bayes</option>
+                                <option value="random_forest">Random Forest</option>
+                            </select>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary" id="predictBtn">
+                                <i class="fas fa-search"></i> Predict Genre
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="predictAllBtn">
+                                <i class="fas fa-chart-bar"></i> Compare All Models
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="results-card" id="resultsCard" style="display: none;">
+                    <h2><i class="fas fa-chart-pie"></i> Prediction Results</h2>
+                    
+                    <div class="main-prediction">
+                        <div class="prediction-badge" id="mainPrediction">
+                            <!-- Main prediction will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="top-predictions">
+                        <h3>Top Predictions</h3>
+                        <div class="predictions-list" id="topPredictions">
+                            <!-- Top predictions will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="feature-analysis">
+                        <h3>Key Features</h3>
+                        <div class="features-list" id="featuresList">
+                            <!-- Feature analysis will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-card" id="comparisonCard" style="display: none;">
+                    <h2><i class="fas fa-balance-scale"></i> Model Comparison</h2>
+                    <div class="comparison-table" id="comparisonTable">
+                        <!-- Model comparison will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> How it Works</h3>
+                    <p>This application uses machine learning models trained on movie plot summaries to predict genres. The system employs:</p>
+                    <ul>
+                        <li><strong>TF-IDF Vectorization:</strong> Converts text into numerical features</li>
+                        <li><strong>Text Preprocessing:</strong> Cleans and normalizes the input text</li>
+                        <li><strong>Multiple Classifiers:</strong> SVM, Logistic Regression, Naive Bayes, and Random Forest</li>
+                        <li><strong>Confidence Scoring:</strong> Provides prediction confidence levels</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fas fa-lightbulb"></i> Tips for Better Predictions</h3>
+                    <ul>
+                        <li>Provide detailed plot summaries (50+ words)</li>
+                        <li>Include key plot elements, characters, and themes</li>
+                        <li>Mention genre-specific keywords (e.g., "magic" for Fantasy, "detective" for Crime)</li>
+                        <li>Avoid spoilers but include enough context</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Movie Genre Classification. Built with Python, Flask, and Machine Learning.</p>
+        </footer>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Analyzing your movie plot...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html> 
