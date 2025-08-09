@@ -1,0 +1,6 @@
+RowNumber,CustomerId,Surname,CreditScore,Geography,Gender,Age,Tenure,Balance,NumOfProducts,HasCrCard,IsActiveMember,EstimatedSalary,Exited
+6253,15687492,Anderson,596,Germany,Male,32,3,96709.07,2,0,0,41788.37,0
+4685,15736963,Herring,623,France,Male,43,1,0.0,2,1,1,146379.3,0
+1732,15721730,Amechi,601,Spain,Female,44,4,0.0,2,1,0,58561.31,0
+4743,15762134,Liang,506,Germany,Male,59,8,119152.1,2,1,1,170679.74,0
+4522,15648898,Chuang,560,Spain,Female,27,7,124995.98,1,1,1,114669.79,0
